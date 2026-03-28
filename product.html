@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品詳情 | COCOFATCAT</title>
+    <link rel="icon" href="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container { display: flex; flex-wrap: wrap; padding: 60px 5%; max-width: 1200px; margin: 0 auto; gap: 50px; flex:1; }
+        .product-gallery { flex: 1.2; min-width: 320px; }
+        #main-image { width: 100%; aspect-ratio: 1/1; object-fit: cover; border: 1px solid #f0f0f0; margin-bottom: 15px; }
+        [data-theme="dark"] #main-image { border-color: #333; }
+        .thumbnail-list { display: flex; gap: 10px; }
+        .thumbnail-list img { width: calc(25% - 8px); aspect-ratio: 1/1; cursor: pointer; opacity: 0.6; transition: 0.3s; }
+        .product-info { flex: 1; min-width: 320px; }
+        .price { font-size: 24px; font-weight: bold; margin: 20px 0; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        [data-theme="dark"] .price { border-bottom-color: #333; }
+        .option-group { margin-bottom: 25px; }
+        .option-title { font-size: 11px; font-weight: bold; letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .option-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+        .option-grid input { display: none; }
+        .option-grid label { padding: 10px 18px; border: 1px solid #eee; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        [data-theme="dark"] .option-grid label { border-color: #333; }
+        .option-grid input:checked + label { background: var(--accent-color); color: var(--bg-color); font-weight: bold; }
+        .size-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; margin-top: 10px; }
+        .size-table th { border-bottom: 1px solid #eee; padding: 10px 0; font-weight: bold; }
+        .size-table td { border-bottom: 1px solid #f9f9f9; padding: 10px 0; color: var(--text-muted); }
+        [data-theme="dark"] .size-table th, [data-theme="dark"] .size-table td { border-bottom-color: #333; }
+        @media (max-width: 768px) { .container { padding: 20px 4%; gap: 30px; } }
+    </style>
+</head>
+<body>
+    <section class="container">
+        <div class="product-gallery">
+            <img id="main-image" src="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+            <div class="thumbnail-list" id="thumb-container"></div>
+        </div>
+        
+        <div class="product-info">
+            <h1 id="cloud-product-name">載入中...</h1>
+            <p style="color:var(--text-muted);">Beyond Minimalism Collection</p>
+            <div class="price" id="cloud-product-price">NT$ ...</div>
+            
+            <div class="option-group">
+                <div class="option-title">版型</div>
+                <div class="option-grid">
+                    <input type="radio" id="v1" name="version" value="常規版" checked><label for="v1">常規版 STANDARD</label>
+                </div>
+            </div>
+
+            <div class="option-group" id="color-group" style="display:none;">
+                <div class="option-title">顏色</div>
+                <div class="option-grid">
+                    <input type="radio" id="c1" name="color" value="單一顏色" checked>
+                    <label for="c1" id="dynamic-color-label">單一顏色</label>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <div class="option-title">
+                    <span>尺寸</span>
+                    <span onclick="openSizeModal()" style="color:var(--primary-color); cursor:pointer; text-decoration:underline; text-transform:none;">不知道穿什麼尺寸？</span>
+                </div>
+                <div class="option-grid">
+                    <input type="radio" id="s1" name="size" value="S" checked><label for="s1">S</label>
+                    <input type="radio" id="s2" name="size" value="M"><label for="s2">M</label>
+                    <input type="radio" id="s3" name="size" value="L"><label for="s3">L</label>
+                    <input type="radio" id="s4" name="size" value="XL"><label for="s4">XL</label>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" id="add-to-cart-btn" style="margin-top: 10px;">加入購物車</button>
+            
+            <div class="info-accordion" style="margin-top: 30px;">
+                <div class="accordion-item" onclick="toggleAccordion(this)"><button class="accordion-header">產品介紹</button><div class="accordion-content">本商品詳細資訊載入中。提供 7 天鑑賞期，請安心選購。</div></div>
+                <div class="accordion-item" onclick="toggleAccordion(this)"><button class="accordion-header">尺寸指南</button><div class="accordion-content"><table class="size-table"><tr><th>尺寸</th><th>衣長</th><th>胸寬</th></tr><tr><td>S</td><td>68</td><td>52</td></tr><tr><td>M</td><td>70</td><td>54</td></tr><tr><td>L</td><td>72</td><td>56</td></tr><tr><td>XL</td><td>74</td><td>58</td></tr></table></div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="sizeModal" style="z-index: 10005;" onclick="if(event.target===this) closeSizeModal()">
+        <div style="background:var(--bg-color); padding:30px; border-radius:16px; width:90%; max-width:400px; text-align:center; position:relative; color:var(--accent-color);">
+            <span class="lightbox-close" style="top:10px; right:15px; color:var(--text-muted);" onclick="closeSizeModal()">&times;</span>
+            <h3 style="letter-spacing:2px; margin-top:0;">📏 智慧尺寸推薦</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">輸入身高體重，讓 COCO 幫你挑選最完美的版型。</p>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="number" id="userHeight" placeholder="身高 (cm)" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; background:transparent; color:var(--accent-color);">
+                <input type="number" id="userWeight" placeholder="體重 (kg)" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; background:transparent; color:var(--accent-color);">
+            </div>
+            <button class="btn btn-primary" onclick="calculateSize()" style="padding:12px; font-size:12px; border-radius:8px;">馬上測量</button>
+            <div id="sizeResult" style="margin-top:20px; font-weight:bold; color:var(--primary-color); font-size:14px; display:none; padding:15px; background:rgba(0,77,64,0.05); border-radius:8px;"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="main.js"></script>
+    
+    <script>
+        // 放大鏡觸發與尺寸推薦邏輯
+        document.addEventListener("DOMContentLoaded", () => {
+            const mainImg = document.getElementById('main-image');
+            mainImg.style.cursor = "zoom-in";
+            mainImg.onclick = () => openLightbox(mainImg.src);
+        });
+
+        function openSizeModal() { document.getElementById('sizeModal').classList.add('show'); }
+        function closeSizeModal() { document.getElementById('sizeModal').classList.remove('show'); }
+        function calculateSize() {
+            const h = parseInt(document.getElementById('userHeight').value);
+            const w = parseInt(document.getElementById('userWeight').value);
+            const res = document.getElementById('sizeResult');
+            if(!h || !w) { res.style.display='block'; res.innerText="🐾 請填寫完整的身高與體重喔！"; res.style.color="#d93025"; return; }
+            
+            res.style.color="var(--primary-color)";
+            let size = "M"; 
+            if (w <= 55) size = "S"; else if (w > 55 && w <= 65) size = "M"; else if (w > 65 && w <= 78) size = "L"; else size = "XL";
+            res.style.display='block'; res.innerText = `✨ COCO 建議您帶 ${size} 號，穿起來會有完美的微寬鬆慵懶感喔！🐾`;
+            document.querySelector(`input[name="size"][value="${size}"]`).checked = true;
+        }
+    </script>
+</body>
+</html>

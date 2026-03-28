@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COCOFATCAT | Beyond Minimalism</title>
+    <meta name="description" content="不完美，才是最真實的完美。極簡重磅系列現正發售。">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="COCOFATCAT | Beyond Minimalism">
+    <meta property="og:image" content="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+    <link rel="icon" href="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ✨ 新增：首頁 Canvas 專屬 z-index 樣式 */
+        #hero-bg { position: relative; overflow: hidden; }
+        #heroCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; /* 夾在背景圖與黑色遮罩之間 */
+            pointer-events: none; /* 關鍵！讓滑鼠穿透畫布，能點到按鈕 */
+        }
+    </style>
+</head>
+<body>
+    <section style="height:80vh; background-position:center; background-size:cover; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:#fff;" id="hero-bg">
+        
+        <canvas id="heroCanvas"></canvas>
+
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:2;"></div>
+        
+        <div style="z-index:3; padding:0 20px;">
+            <h2 style="font-size:clamp(36px, 8vw, 72px); letter-spacing:15px; text-transform:uppercase; font-weight:900; margin:0;">COCOFATCAT</h2>
+            <a href="#shop" class="btn" style="width:auto; padding:18px 50px; background:#fff; color:#222; margin-top:40px;">探索新品</a>
+        </div>
+    </section>
+    
+    <div style="padding: 100px 5%; max-width:1200px; margin:0 auto; flex:1;" id="shop">
+        <h2 style="text-align:center; letter-spacing:4px; margin-bottom:50px;">NEW ARRIVALS</h2>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:40px;" id="cloud-product-list">
+            <p style="text-align:center; width:100%; color:var(--text-muted); grid-column: 1 / -1; letter-spacing: 2px;">
+                ☁️ 正在與 Firebase 雲端連線中... 🐾
+            </p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="main.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('hero-bg').style.backgroundImage = `url('${IMG_CONFIG.heroBanner}')`;
+            
+            // =========================================
+            // ✨ 啟動：首頁 COCO 互動貓掌 Canvas
+            // =========================================
+            initHeroCanvas();
+        });
+
+        // 貓掌畫布邏輯 (原封不動整合進來)
+        function initHeroCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+            const heroSection = document.getElementById('hero-bg');
+            function resizeCanvas() { canvas.width = heroSection.offsetWidth * window.devicePixelRatio; canvas.height = heroSection.offsetHeight * window.devicePixelRatio; ctx.scale(window.devicePixelRatio, window.devicePixelRatio); }
+            resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+            let paws = [];
+            heroSection.addEventListener('mousemove', (e) => { const rect = heroSection.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; if (paws.length < 50) { paws.push(new PawPrint(x, y)); } });
+            class PawPrint {
+                constructor(x, y) { this.x = x; this.y = y; this.alpha = 0.6; this.life = 60; this.angle = (Math.random() - 0.5) * 0.5; }
+                update() { this.life--; this.alpha -= 0.01; this.y -= 0.2; }
+                draw() { if (this.alpha <= 0) return; ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); const isDark = document.documentElement.getAttribute('data-theme') === 'dark'; const color = isDark ? `rgba(0, 121, 107, ${this.alpha})` : `rgba(0, 77, 64, ${this.alpha})`; ctx.fillStyle = color; ctx.beginPath(); ctx.arc(0, 5, 12, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(-12, -8, 5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(-4, -15, 5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(4, -15, 5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(12, -8, 5, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+            }
+            function animatePaws() { ctx.clearRect(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio); paws.forEach((paw, index) => { paw.update(); paw.draw(); if (paw.life <= 0) { paws.splice(index, 1); } }); requestAnimationFrame(animatePaws); }
+            animatePaws();
+        }
+    </script>
+</body>
+</html>

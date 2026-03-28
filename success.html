@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下單成功 | COCOFATCAT</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .main-content { height: calc(100vh - var(--nav-height) - 100px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; }
+        h1 { font-size: clamp(32px, 8vw, 56px); letter-spacing: 10px; text-transform: uppercase; margin: 0; font-weight: 900; }
+        .line { width: 60px; height: 3px; background: var(--primary-color); margin: 30px auto; }
+        p { color: #666; font-size: 14px; letter-spacing: 2px; line-height: 2; max-width: 400px; margin: 0 auto 40px auto; }
+        .btn-success { display: inline-block; padding: 18px 45px; background: var(--accent-color); color: #fff; text-decoration: none; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; transition: 0.3s; }
+        .btn-success:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="window.location.href='index.html'"><img id="site-logo" src=""></div>
+    </header>
+
+    <div class="main-content">
+        <h1>Thank You</h1>
+        <div class="line"></div>
+        <p>感謝您的購買！<br>我們已收到您的訂單，將盡快為您安排出貨。<br>商品寄出後將以 Email 通知您。</p>
+        <a href="index.html" class="btn-success">繼續購物</a>
+    </div>
+
+    <footer>&copy; 2026 COCOFATCAT. ALL RIGHTS RESERVED.</footer>
+
+    <script src="main.js"></script>
+    <script>
+        window.onload = () => {
+            document.getElementById('site-logo').src = IMG_CONFIG.logo;
+            localStorage.removeItem('cocofatcat_cart');
+        };
+    </script>
+</body>
+</html>

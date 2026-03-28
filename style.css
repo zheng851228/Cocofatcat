@@ -1,0 +1,201 @@
+/* =========================================
+   COCOFATCAT | 全站核心樣式表 (style.css)
+   ========================================= */
+
+:root { 
+    --primary-color: #004d40;   /* 品牌孔雀綠 */
+    --accent-color: #222222;    /* 核心文字/深色 */
+    --bg-color: #ffffff;       /* 背景白 */
+    --text-muted: #888888;     /* 輔助灰 */
+    --nav-height: 100px; 
+    --transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); 
+}
+
+/* 🌓 深色模式變數 (Dark Mode) */
+[data-theme="dark"] {
+    --primary-color: #26a69a;  /* 深色模式下綠色稍亮增加對比 */
+    --accent-color: #f5f5f5;
+    --bg-color: #121212;
+    --text-muted: #aaaaaa;
+}
+
+/* 全域設定 */
+body { 
+    margin: 0; 
+    font-family: 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
+    color: var(--accent-color); 
+    background-color: var(--bg-color); 
+    line-height: 1.6; 
+    overflow-x: hidden; 
+    scroll-behavior: smooth; 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+    transition: background-color 0.4s ease, color 0.4s ease;
+    cursor: url('https://i.postimg.cc/8PQ3TdQN/IMG-9056.png') 16 16, auto; /* 🐾 貓掌游標 */
+}
+
+a { text-decoration: none; color: inherit; cursor: pointer; }
+button { cursor: pointer; border: none; outline: none; background: none; font-family: inherit; }
+
+/* 📢 公告欄 */
+.announcement-bar { 
+    background-color: var(--accent-color); 
+    color: var(--bg-color); 
+    font-size: 11px; 
+    letter-spacing: 4px; 
+    font-weight: bold; 
+    padding: 12px 0; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    z-index: 1000;
+}
+.announcement-text { 
+    display: inline-block; 
+    padding-left: 100%; 
+    animation: marqueeScroll 20s linear infinite; 
+}
+@keyframes marqueeScroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
+/* 導覽列 */
+header { 
+    background: rgba(var(--bg-color), 0.95); 
+    padding: 0 4%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    position: sticky; 
+    top: 0; 
+    border-bottom: 1px solid rgba(0,0,0,0.05); 
+    z-index: 1000; 
+    height: var(--nav-height); 
+    backdrop-filter: blur(10px); 
+}
+[data-theme="dark"] header { border-bottom-color: #333; }
+
+.nav-left, .nav-right { flex: 1; display: flex; align-items: center; }
+.nav-center { flex: 0; display: flex; justify-content: center; }
+.nav-right { justify-content: flex-end; }
+.logo img { height: 75px; transition: 0.3s; }
+
+/* 下拉選單 */
+.dropdown { position: relative; }
+.dropbtn { font-size: 13px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: var(--accent-color); }
+.dropdown-content { 
+    position: absolute; top: 100%; left: 0; 
+    background-color: var(--bg-color); 
+    min-width: 200px; 
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.1); 
+    border-radius: 12px; 
+    overflow: hidden; 
+    opacity: 0; visibility: hidden; transform: translateY(10px); transition: var(--transition); 
+}
+.dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
+.dropdown-content a { color: var(--text-muted); padding: 15px 20px; display: block; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.03); }
+.dropdown-content a:hover { background: rgba(0,0,0,0.02); color: var(--accent-color); }
+
+/* 🛒 購物車側欄 */
+.cart-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
+.cart-sidebar { 
+    position: fixed; top: 0; right: -100%; 
+    width: 380px; height: 100vh; 
+    background: var(--bg-color); 
+    z-index: 2001; 
+    transition: var(--transition); 
+    padding: 40px; 
+    box-sizing: border-box; 
+    display: flex; flex-direction: column; 
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+}
+.cart-sidebar.open { right: 0; }
+
+.cart-item-wrapper { position: relative; overflow: hidden; margin-bottom: 15px; background: #ff5252; border-radius: 12px; }
+.cart-item-delete-bg { position: absolute; right: 0; width: 80px; height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: bold; z-index: 1; }
+.cart-item-content { 
+    background: var(--bg-color); 
+    padding: 15px; 
+    position: relative; z-index: 2; 
+    transition: 0.3s; 
+    display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.cart-item-content.swiped { transform: translateX(-80px); }
+
+/* 🤖 AI 智能助理 */
+.ai-chat-btn { 
+    position: fixed; bottom: 30px; right: 30px; 
+    width: 60px; height: 60px; 
+    background: var(--primary-color); 
+    border-radius: 50%; 
+    box-shadow: 0 10px 25px rgba(0,77,64,0.3); 
+    display: flex; justify-content: center; align-items: center; 
+    z-index: 999; transition: 0.3s; 
+}
+.ai-chat-btn:hover { transform: scale(1.1) rotate(5deg); }
+.ai-chat-btn svg { fill: #fff; width: 28px; height: 28px; }
+
+.ai-chat-window { 
+    position: fixed; bottom: 100px; right: 30px; 
+    width: 320px; height: 450px; 
+    background: var(--bg-color); 
+    border-radius: 20px; 
+    box-shadow: 0 15px 50px rgba(0,0,0,0.15); 
+    z-index: 999; 
+    display: flex; flex-direction: column; 
+    overflow: hidden; 
+    opacity: 0; pointer-events: none; transform: translateY(20px); transition: var(--transition); 
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.ai-chat-window.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+.ai-chat-header { background: var(--accent-color); color: var(--bg-color); padding: 18px; font-size: 13px; font-weight: bold; letter-spacing: 1px; display: flex; justify-content: space-between; }
+.ai-chat-body { flex: 1; padding: 15px; overflow-y: auto; background: rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 12px; }
+.ai-msg { max-width: 80%; padding: 10px 14px; border-radius: 15px; font-size: 13px; }
+.ai-msg.bot { background: var(--bg-color); color: var(--accent-color); align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.ai-msg.user { background: var(--primary-color); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+.ai-chat-input-area { display: flex; padding: 12px; background: var(--bg-color); border-top: 1px solid rgba(0,0,0,0.05); }
+.ai-chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 13px; background: transparent; color: var(--accent-color); outline: none; }
+
+/* 🔍 燈箱 & 彈窗 (Lightbox/Modal) */
+.lightbox { 
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.9); z-index: 10000; 
+    justify-content: center; align-items: center; 
+    opacity: 0; transition: 0.3s; backdrop-filter: blur(8px); 
+}
+.lightbox.show { display: flex; opacity: 1; }
+.lightbox img { max-width: 85%; max-height: 85vh; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.lightbox-close { position: absolute; top: 30px; right: 40px; color: #fff; font-size: 35px; cursor: pointer; }
+
+/* 🥐 元件樣式 (按鈕、提示) */
+.btn { 
+    width: 100%; padding: 18px; border-radius: 30px; 
+    font-weight: bold; letter-spacing: 2px; font-size: 13px; 
+    transition: 0.3s; text-align: center; display: inline-block; 
+    box-sizing: border-box; border: 1px solid var(--accent-color);
+    color: var(--accent-color); background: transparent;
+}
+.btn-primary { background: var(--accent-color); color: var(--bg-color); border: none; }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+.toast { 
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px); 
+    background: var(--accent-color); color: var(--bg-color); 
+    padding: 12px 25px; border-radius: 30px; font-size: 12px; font-weight: bold; 
+    letter-spacing: 1px; z-index: 9999; opacity: 0; transition: 0.4s; 
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* 📦 頁腳 */
+footer { padding: 80px 5% 40px; text-align: center; border-top: 1px solid rgba(0,0,0,0.05); margin-top: auto; }
+.footer-links { display: flex; justify-content: center; gap: 30px; margin-bottom: 25px; font-size: 11px; font-weight: bold; letter-spacing: 2px; }
+.social-icon svg { width: 20px; height: 20px; fill: var(--accent-color); }
+.copyright { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* 📱 響應式微調 */
+@media (max-width: 768px) {
+    header { height: 80px; }
+    .logo img { height: 60px; }
+    .cart-sidebar { width: 100%; right: -100%; border-radius: 0; }
+    .ai-chat-window { bottom: 0; right: 0; width: 100%; height: 100vh; border-radius: 0; }
+    .ai-chat-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+}

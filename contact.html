@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聯絡我們 | COCOFATCAT</title>
+    <link rel="icon" href="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-container { max-width: 600px; margin: 80px auto; padding: 0 5%; flex: 1; width: 100%; box-sizing: border-box; }
+        .form-group { margin-bottom: 25px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px; color: var(--accent-color); }
+        .form-control { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 14px; box-sizing: border-box; transition: 0.3s; font-family: inherit; background: #fafafa; }
+        .form-control:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 2px rgba(0,77,64,0.1); background: #fff; }
+        textarea.form-control { resize: vertical; min-height: 150px; }
+    </style>
+</head>
+<body>
+    <main class="contact-container" style="text-align:center;">
+        <h1 style="letter-spacing:5px;">CONTACT US</h1>
+        <div style="width: 40px; height: 2px; background: var(--primary-color); margin: 0 auto 30px auto;"></div>
+        <p style="color:#666; line-height:2; margin-bottom: 40px; font-size: 14px; letter-spacing: 1.5px;">有任何訂單問題或商品建議？<br>請填寫下方表單，我們會盡快與您聯繫 🐾</p>
+        
+        <form name="contact" method="POST" data-netlify="true" action="index.html" onsubmit="event.preventDefault(); showToast('✨ 訊息已送出！客服將盡快回覆您。🐾'); setTimeout(() => window.location.href='index.html', 2500);">
+            <div class="form-group"><label>姓名 Name *</label><input type="text" name="name" class="form-control" required placeholder="請輸入您的姓名"></div>
+            <div class="form-group"><label>電子郵件 Email *</label><input type="email" name="email" class="form-control" required placeholder="example@email.com"></div>
+            <div class="form-group"><label>訂單編號 Order Number (選填)</label><input type="text" name="orderNumber" class="form-control" placeholder="若有訂單問題請提供編號"></div>
+            <div class="form-group"><label>訊息內容 Message *</label><textarea name="message" class="form-control" required placeholder="請輸入您的問題或建議..."></textarea></div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">發送訊息</button>
+        </form>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>

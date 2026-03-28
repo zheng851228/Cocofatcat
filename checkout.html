@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全結帳 | COCOFATCAT</title>
+    <link rel="icon" href="https://i.postimg.cc/rpWnBvdd/IMG-9051.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .checkout-container { display: flex; flex-wrap: wrap; padding: 60px 5%; max-width: 1200px; margin: 0 auto; gap: 50px; flex:1; }
+        .checkout-form-area { flex: 1.5; min-width: 320px; }
+        .checkout-summary-area { flex: 1; min-width: 320px; background: #fcfcfc; padding: 40px; border-radius: 20px; border: 1px solid #f0f0f0; height: fit-content; }
+        [data-theme="dark"] .checkout-summary-area { background: #1a1a1a; border-color: #333; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px; color: var(--accent-color); }
+        .form-group input, .form-group select { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; background: transparent; color: var(--accent-color); box-sizing: border-box; }
+        [data-theme="dark"] .form-group input, [data-theme="dark"] .form-group select { border-color: #444; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-color); }
+        
+        .bank-info { background: rgba(0,77,64,0.05); padding: 20px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid var(--primary-color); }
+        .bank-info p { margin: 5px 0; font-size: 13px; letter-spacing: 1px; }
+        
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 13px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        [data-theme="dark"] .summary-item { border-bottom-color: #333; }
+        .summary-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .summary-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--accent-color); }
+        
+        @media (max-width: 768px) { .checkout-container { padding: 30px 5%; gap: 30px; flex-direction: column-reverse; } .checkout-summary-area { padding: 25px; } }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        
+        <div class="checkout-form-area">
+            <h1 style="letter-spacing: 4px; margin-top: 0;">結帳資訊</h1>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 40px;">請填寫您的收件資料與匯款帳號末五碼，以便我們核對訂單並出貨喔！🐾</p>
+            
+            <div class="bank-info">
+                <p style="font-weight: bold; color: var(--primary-color); margin-bottom: 10px;">🏦 COCOFATCAT 官方匯款帳號</p>
+                <p>銀行代碼：(808) 玉山銀行</p>
+                <p>帳號：1234-567-890123</p>
+                <p>戶名：林薯條</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">* 請於下單後 3 日內完成匯款，以免系統自動取消訂單。</p>
+            </div>
+
+            <form name="cocofatcat-orders" method="POST" data-netlify="true" onsubmit="handleOrderSubmit()">
+                <input type="hidden" id="hidden-order-details" name="訂單明細" value="">
+                <input type="hidden" id="hidden-order-total" name="訂單總金額" value="">
+
+                <div style="display: flex; gap: 20px;">
+                    <div class="form-group" style="flex: 1;"><label>收件人姓名 *</label><input type="text" name="姓名" required></div>
+                    <div class="form-group" style="flex: 1;"><label>聯絡電話 *</label><input type="tel" name="電話" required></div>
+                </div>
+                
+                <div class="form-group"><label>Email 電子信箱 *</label><input type="email" name="Email" required></div>
+                
+                <div class="form-group"><label>收件地址 (或超商店名/店號) *</label><input type="text" name="收件地址" placeholder="例：台北市信義區... 或 7-11 喵喵門市(店號123456)" required></div>
+                
+                <div class="form-group"><label>您的匯款帳號「末五碼」 *</label><input type="text" name="匯款末五碼" placeholder="例：98765 (若尚未匯款可填寫 '稍後提供')" required></div>
+                
+                <div class="form-group"><label>訂單備註 (選填)</label><input type="text" name="備註" placeholder="有什麼想告訴 COCO 的嗎？"></div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px; border-radius: 8px; font-size: 15px;" id="submit-btn">確認送出訂單</button>
+            </form>
+        </div>
+
+        <div class="checkout-summary-area">
+            <h2 style="font-size: 16px; letter-spacing: 2px; margin-top: 0; margin-bottom: 30px;">訂單摘要</h2>
+            
+            <div id="checkout-items-container">
+                <p style="color:var(--text-muted); text-align:center;">載入中... 🐾</p>
+            </div>
+
+            <div style="margin-top: 30px; font-size: 13px; color: var(--text-muted);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>商品小計</span><span id="subtotal-display">NT$ 0</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>運費 (歡慶上線)</span><span style="color:var(--primary-color); font-weight:bold;">免運費</span></div>
+            </div>
+
+            <div class="summary-total">
+                <span>總計</span>
+                <span id="total-display">NT$ 0</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 從 localStorage 抓取購物車資料
+            let cart = JSON.parse(localStorage.getItem('ccfc_cart')) || [];
+            const container = document.getElementById('checkout-items-container');
+            const subtotalDisplay = document.getElementById('subtotal-display');
+            const totalDisplay = document.getElementById('total-display');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // 隱藏欄位 (要寄給老闆的)
+            const hiddenDetails = document.getElementById('hidden-order-details');
+            const hiddenTotal = document.getElementById('hidden-order-total');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center;">您的購物車是空的喔！快去挑選喜歡的商品吧🐾</p>';
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = "0.5";
+                submitBtn.innerText = "購物車尚無商品";
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            let orderTextForEmail = ''; // 準備塞給表單的純文字明細
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                // 畫在網頁上的漂亮明細
+                html += `
+                    <div class="summary-item">
+                        <div style="flex:1; padding-right:15px;">
+                            <b style="font-size:14px;">${item.name}</b><br>
+                            <span style="color:var(--text-muted); font-size:11px;">${item.version} / ${item.color} / ${item.size}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:bold;">NT$ ${itemTotal}</div>
+                            <div style="color:var(--text-muted); font-size:11px; margin-top:4px;">數量: ${item.quantity}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // 寫給老闆看的純文字明細
+                orderTextForEmail += `👉 ${item.name} (${item.version} / ${item.color} / ${item.size}) x ${item.quantity}件 = NT$${itemTotal}\n`;
+            });
+
+            // 把資料塞進網頁
+            container.innerHTML = html;
+            subtotalDisplay.innerText = `NT$ ${total}`;
+            totalDisplay.innerText = `NT$ ${total}`;
+            
+            // 把資料塞進隱藏表單
+            hiddenDetails.value = orderTextForEmail;
+            hiddenTotal.value = `NT$ ${total}`;
+        });
+
+        function handleOrderSubmit() {
+            // 當客人按下送出表單，我們在表單飛出去的瞬間，清空他的購物車
+            localStorage.removeItem('ccfc_cart');
+            
+            // Netlify 會自動接手把這份表單寄到你的信箱，並跳轉到成功畫面！
+        }
+    </script>
+</body>
+</html>
